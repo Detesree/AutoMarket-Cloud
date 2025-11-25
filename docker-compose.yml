@@ -1,0 +1,104 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:15
+   
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin123
+      POSTGRES_DB: automarket_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  inventory-service:
+    build: ./inventory-service
+    
+    restart: always
+    depends_on:
+      - postgres
+    ports:
+      - "3001:3001"
+    environment:
+      DB_USER: admin
+      DB_PASSWORD: admin123
+      DB_HOST: postgres        # nombre del servicio postgres
+      DB_PORT: 5432
+      DB_NAME: automarket_db
+      PORT: 3001
+    # Si deseas ver logs en consola interna:
+    # command: npm start
+  customers-service:
+    build: ./customers-service
+    
+    restart: always
+    depends_on:
+      - postgres
+    ports:
+      - "3002:3002"
+    environment:
+      DB_USER: admin
+      DB_PASSWORD: admin123
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: automarket_db
+      PORT: 3002
+
+  sales-service:
+    build: ./sales-service
+    
+    restart: always
+    depends_on:
+      - postgres
+    ports:
+      - "3003:3003"
+    environment:
+      DB_USER: admin
+      DB_PASSWORD: admin123
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: automarket_db
+      PORT: 3003
+
+  api-gateway:
+    build: ./api-gateway
+    
+    restart: always
+    depends_on:
+      - inventory-service
+      - customers-service
+      - sales-service
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: 3000
+      INVENTORY_URL: http://inventory-service:3001
+      CUSTOMERS_URL: http://customers-service:3002
+      SALES_URL: http://sales-service:3003
+
+  prometheus:
+    image: prom/prometheus
+    
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    depends_on:
+      - inventory-service
+      - customers-service
+      - sales-service
+
+  grafana:
+    image: grafana/grafana
+    
+    restart: always
+    ports:
+      - "3004:3000"
+    depends_on:
+      - prometheus
+
+volumes:
+  postgres_data:
