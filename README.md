@@ -66,7 +66,7 @@ k6 run k6/stress-test.js
 k6 run k6/dynamic-test.js
 ________________________________________
 ⭐ 8. Evidencias Técnicas
-Aquí debes insertar TODAS LAS IMÁGENES que enviaste.
+
 Las organizo EXACTAMENTE como deben ir:
 🔹 8.1 Evidencias del microservicio
 1.	Servidor corriendo en terminal
