@@ -21,7 +21,7 @@ El proyecto sigue principios cloud-native:
 •	Métricas expuestas en /metrics
 •	Escalabilidad horizontal
 •	Integración para despliegue en plataformas cloud reales
-📌 Aquí debes insertar la imagen del diagrama de arquitectura que estaba en tu primer informe.
+
 ________________________________________
 ⭐ 6. Tecnologías Utilizadas
 (Se combinan las listadas por ti + las nuevas)
